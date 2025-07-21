@@ -10,5 +10,6 @@ public interface IUnitOfWork
     Task RollbackTransactionAsync();
 
     IEmployeeRepository employeeRepository { get; }
+    IUsersRepository usersRepository { get; }
     public void Dispose();
 }

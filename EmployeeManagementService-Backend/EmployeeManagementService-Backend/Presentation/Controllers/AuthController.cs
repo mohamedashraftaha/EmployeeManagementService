@@ -5,6 +5,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using EmployeeManagementService_Backend.Service;
 
 namespace EmployeeManagementService_Backend.Presentation.Controllers;
 
@@ -13,57 +14,51 @@ namespace EmployeeManagementService_Backend.Presentation.Controllers;
 public class AuthController : ControllerBase
 {
     private readonly IConfiguration _configuration;
-    // For demo: static user list
-    private static readonly List<User> Users = new()
-    {
-        new User { Username = "admin", Password = "password" },
-        new User { Username = "user", Password = "password" }
-    };
+    private readonly IJwtService _jwtService;
+    private readonly ILogger<AuthController> _logger;
+    private readonly IAuthenticationService _authenticationService;
 
-    public AuthController(IConfiguration configuration)
+    public AuthController(IConfiguration configuration, IJwtService jwtService, ILogger<AuthController> logger, IAuthenticationService authenticationService)
     {
         _configuration = configuration;
+        _jwtService = jwtService;
+        _logger = logger;
+        _authenticationService = authenticationService;
     }
 
     [HttpPost("login")]
-    public IActionResult Login([FromBody] User login)
+    public async Task<IActionResult> Login([FromBody] User login)
     {
-        var user = Users.FirstOrDefault(u => u.Username == login.Username && u.Password == login.Password);
-        if (user == null)
-            return Unauthorized();
+        try
+        {
+            var user = await _authenticationService.ValidateUser(login.Username, login.PasswordHash);
+            if (user == null)
+                return Unauthorized();
 
-        var token = GenerateJwtToken(user);
-        return Ok(new { token });
+            var token = _jwtService.GenerateJwtToken(user);
+            return Ok(new { token });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "An error occurred while processing your request.");
+            return StatusCode(500, "An error occurred while processing your request.");
+        }
     }
 
     [HttpPost("register")]
-    public IActionResult Register([FromBody] User newUser)
+    public async Task<IActionResult> Register([FromBody] User newUser)
     {
-        if (Users.Any(u => u.Username == newUser.Username))
-            return Conflict("Username already exists.");
-        if (string.IsNullOrWhiteSpace(newUser.Role))
-            newUser.Role = "User";
-        Users.Add(newUser);
-        return Ok(new { message = "User registered successfully." });
-    }
-
-    private string GenerateJwtToken(User user)
-    {
-        var jwtSettings = _configuration.GetSection("Jwt");
-        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings["Key"]!));
-        var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-        var claims = new[]
+        try
         {
-            new Claim(ClaimTypes.Name, user.Username),
-            new Claim(ClaimTypes.Role, user.Role)
-        };
-        var token = new JwtSecurityToken(
-            issuer: jwtSettings["Issuer"],
-            audience: jwtSettings["Audience"],
-            claims: claims,
-            expires: DateTime.UtcNow.AddMinutes(int.Parse(jwtSettings["ExpiryMinutes"]!)),
-            signingCredentials: creds
-        );
-        return new JwtSecurityTokenHandler().WriteToken(token);
+            var registered = await _authenticationService.RegisterUser(newUser.Username, newUser.PasswordHash, newUser.Role);
+            if (!registered)
+                return Conflict("Username already exists.");
+            return Ok(new { message = "User registered successfully." });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "An error occurred while processing your request.");
+            return StatusCode(500, "An error occurred while processing your request.");
+        }
     }
 } 

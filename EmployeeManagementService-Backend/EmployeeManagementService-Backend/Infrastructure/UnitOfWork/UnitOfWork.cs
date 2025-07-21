@@ -14,6 +14,7 @@ namespace EmployeeManagementService_Backend.Infrastructure.UnitOfWork
         }
 
         public IEmployeeRepository employeeRepository => new EmployeeRepository(_employeeDbContext);
+        public IUsersRepository usersRepository => new UsersRepository(_employeeDbContext);
 
         public async Task BeginTransactionAsync()
         {

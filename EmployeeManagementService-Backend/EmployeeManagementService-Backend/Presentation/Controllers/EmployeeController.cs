@@ -29,49 +29,89 @@ namespace EmployeeManagementService_Backend.Presentation.Controllers
             [FromQuery] string? email = null,
             [FromQuery] string? position = null)
         {
-            var result = await _employeeService.GetAllAsync(pageNumber, pageSize, searchTerm, firstName, lastName, email, position);
-            return Ok(result);
+            try
+            {
+                var result = await _employeeService.GetAllAsync(pageNumber, pageSize, searchTerm, firstName, lastName, email, position);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error in GetAll");
+                return StatusCode(500, "An error occurred while processing your request.");
+            }
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<Employee>> GetById(int id)
         {
-            var employee = await _employeeService.GetByIdAsync(id);
-            if (employee == null)
-                return NotFound();
-            return Ok(employee);
+            try
+            {
+                var employee = await _employeeService.GetByIdAsync(id);
+                if (employee == null)
+                    return NotFound();
+                return Ok(employee);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error in GetById");
+                return StatusCode(500, "An error occurred while processing your request.");
+            }
         }
 
         [HttpPost]
         public async Task<ActionResult<Employee>> Create(Employee employee)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-            var created = await _employeeService.AddAsync(employee);
-            return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
+            try
+            {
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
+                var created = await _employeeService.AddAsync(employee);
+                return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error in Create");
+                return StatusCode(500, "An error occurred while processing your request.");
+            }
         }
 
         [HttpPut("{id}")]
         public async Task<ActionResult<Employee>> Update(int id, Employee employee)
         {
-            if (id != employee.Id)
-                return BadRequest();
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-            var updated = await _employeeService.UpdateAsync(id, employee);
-            if (updated == null)
-                return NotFound();
-            return Ok(updated);
+            try
+            {
+                if (id != employee.Id)
+                    return BadRequest();
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
+                var updated = await _employeeService.UpdateAsync(id, employee);
+                if (updated == null)
+                    return NotFound();
+                return Ok(updated);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error in Update");
+                return StatusCode(500, "An error occurred while processing your request.");
+            }
         }
 
         [HttpDelete("{id}")]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int id)
         {
-            var deleted = await _employeeService.DeleteAsync(id);
-            if (!deleted)
-                return NotFound();
-            return NoContent();
+            try
+            {
+                var deleted = await _employeeService.DeleteAsync(id);
+                if (!deleted)
+                    return NotFound();
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error in Delete");
+                return StatusCode(500, "An error occurred while processing your request.");
+            }
         }
     }
 } 
