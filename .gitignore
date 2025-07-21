@@ -1,0 +1,9 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/EmployeeManagementService-Backend/.vs
+/EmployeeManagementService-Backend/EmployeeManagementService-Backend/obj
+/EmployeeManagementService-Backend/EmployeeManagementService-Backend/bin/Debug/net9.0
+/.vs
+/employee-management-frontend/.vscode
