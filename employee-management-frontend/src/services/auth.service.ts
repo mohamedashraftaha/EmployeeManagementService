@@ -60,7 +60,7 @@ export class AuthService {
 
   private loadUserFromStorage(): void {
     const userStr = localStorage.getItem('user');
-    if (userStr && this.isAuthenticated()) {
+    if (userStr && userStr !== 'undefined' && this.isAuthenticated()) {
       const user = JSON.parse(userStr);
       this.currentUserSubject.next(user);
     }

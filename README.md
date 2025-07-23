@@ -36,7 +36,7 @@ This system allows users to register, log in, and view a list of employees. Auth
 - **Unit of Work**: Ensures transactional integrity for database operations.
 
 ### Authentication & Security
-- **Registration**: Stores the encrypted password (AES) for each user. No raw passwords or hashes are stored.
+- **Registration**: Stores the hashed password for each user. No raw passwords or hashes are stored.
 - **Login**: Decrypts the stored password and compares it to the user input.
 - **JWT**: On successful login, a JWT is issued and must be used for all protected API calls.
 - **Error Handling**: All controllers and services use try-catch for robust error handling and logging.
@@ -93,7 +93,7 @@ This system allows users to register, log in, and view a list of employees. Auth
    ```
 3. **Run the Angular development server:**
    ```bash
-   ng serve
+   ng serve --port 4200
    ```
 4. **Open your browser at:**
    - `http://localhost:4200/`
@@ -107,8 +107,8 @@ This system allows users to register, log in, and view a list of employees. Auth
 ---
 
 ## Notes & Improvements
-- **Security**: Passwords are encrypted (AES) for demo purposes. In production, use salted hashing (e.g., bcrypt, PBKDF2) for password storage.
-- **Persistence**: The in-memory database is for demo/testing only. For production, switch to a persistent database (e.g., SQL Server, PostgreSQL).
+- **Security**: Passwords are hashed for demo purposes.
+- **Persistence**: The sqllite database is for demo/testing only. For production, switch to a persistent database (e.g., SQL Server, PostgreSQL).
 - **Validation**: Add more robust validation and error handling as needed.
 - **Extensibility**: The architecture supports easy extension for more features (CRUD for employees, user roles, etc.).
 

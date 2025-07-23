@@ -77,59 +77,12 @@ import { EmployeeService } from '../../services/employee.service';
             </mat-form-field>
 
             <mat-form-field appearance="outline" class="full-width">
-              <mat-label>Phone Number</mat-label>
-              <input matInput formControlName="phoneNumber">
-              <mat-icon matSuffix>phone</mat-icon>
+              <mat-label>Position</mat-label>
+              <input matInput formControlName="position" required>
+              <mat-error *ngIf="employeeForm.get('position')?.hasError('required')">
+                Position is required
+              </mat-error>
             </mat-form-field>
-
-            <div class="form-row">
-              <mat-form-field appearance="outline" class="half-width">
-                <mat-label>Department</mat-label>
-                <mat-select formControlName="department" required>
-                  <mat-option value="IT">IT</mat-option>
-                  <mat-option value="HR">HR</mat-option>
-                  <mat-option value="Finance">Finance</mat-option>
-                  <mat-option value="Marketing">Marketing</mat-option>
-                  <mat-option value="Sales">Sales</mat-option>
-                  <mat-option value="Operations">Operations</mat-option>
-                </mat-select>
-                <mat-error *ngIf="employeeForm.get('department')?.hasError('required')">
-                  Department is required
-                </mat-error>
-              </mat-form-field>
-
-              <mat-form-field appearance="outline" class="half-width">
-                <mat-label>Position</mat-label>
-                <input matInput formControlName="position" required>
-                <mat-error *ngIf="employeeForm.get('position')?.hasError('required')">
-                  Position is required
-                </mat-error>
-              </mat-form-field>
-            </div>
-
-            <div class="form-row">
-              <mat-form-field appearance="outline" class="half-width">
-                <mat-label>Salary</mat-label>
-                <input matInput type="number" formControlName="salary" min="0">
-                <span matTextPrefix>$</span>
-              </mat-form-field>
-
-              <mat-form-field appearance="outline" class="half-width">
-                <mat-label>Hire Date</mat-label>
-                <input matInput [matDatepicker]="picker" formControlName="hireDate" required>
-                <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-                <mat-datepicker #picker></mat-datepicker>
-                <mat-error *ngIf="employeeForm.get('hireDate')?.hasError('required')">
-                  Hire date is required
-                </mat-error>
-              </mat-form-field>
-            </div>
-
-            <div class="form-row" *ngIf="isEditMode">
-              <mat-slide-toggle formControlName="isActive" class="status-toggle">
-                Employee is Active
-              </mat-slide-toggle>
-            </div>
 
             <div class="form-actions">
               <button mat-button type="button" (click)="goBack()" class="cancel-button">
@@ -230,12 +183,7 @@ export class EmployeeFormComponent implements OnInit {
       firstName: ['', [Validators.required]],
       lastName: ['', [Validators.required]],
       email: ['', [Validators.required, Validators.email]],
-      phoneNumber: [''],
-      department: ['', [Validators.required]],
-      position: ['', [Validators.required]],
-      salary: [null, [Validators.min(0)]],
-      hireDate: ['', [Validators.required]],
-      isActive: [true]
+      position: ['', [Validators.required]]
     });
   }
 
@@ -254,7 +202,6 @@ export class EmployeeFormComponent implements OnInit {
         next: (employee) => {
           this.employeeForm.patchValue({
             ...employee,
-            hireDate: new Date(employee.hireDate)
           });
         },
         error: (error) => {

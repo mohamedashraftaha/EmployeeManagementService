@@ -50,11 +50,14 @@ import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.compone
         <mat-card-content>
           <div class="table-container">
             <table mat-table [dataSource]="employees" class="employee-table">
-              <ng-container matColumnDef="name">
-                <th mat-header-cell *matHeaderCellDef>Name</th>
-                <td mat-cell *matCellDef="let employee">
-                  {{employee.firstName}} {{employee.lastName}}
-                </td>
+              <ng-container matColumnDef="firstName">
+                <th mat-header-cell *matHeaderCellDef>First Name</th>
+                <td mat-cell *matCellDef="let employee">{{employee.firstName}}</td>
+              </ng-container>
+
+              <ng-container matColumnDef="lastName">
+                <th mat-header-cell *matHeaderCellDef>Last Name</th>
+                <td mat-cell *matCellDef="let employee">{{employee.lastName}}</td>
               </ng-container>
 
               <ng-container matColumnDef="email">
@@ -62,30 +65,9 @@ import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.compone
                 <td mat-cell *matCellDef="let employee">{{employee.email}}</td>
               </ng-container>
 
-              <ng-container matColumnDef="department">
-                <th mat-header-cell *matHeaderCellDef>Department</th>
-                <td mat-cell *matCellDef="let employee">{{employee.department}}</td>
-              </ng-container>
-
               <ng-container matColumnDef="position">
                 <th mat-header-cell *matHeaderCellDef>Position</th>
                 <td mat-cell *matCellDef="let employee">{{employee.position}}</td>
-              </ng-container>
-
-              <ng-container matColumnDef="salary">
-                <th mat-header-cell *matHeaderCellDef>Salary</th>
-                <td mat-cell *matCellDef="let employee">
-                  {{employee.salary | currency}}
-                </td>
-              </ng-container>
-
-              <ng-container matColumnDef="status">
-                <th mat-header-cell *matHeaderCellDef>Status</th>
-                <td mat-cell *matCellDef="let employee">
-                  <span class="status-badge" [class.active]="employee.isActive" [class.inactive]="!employee.isActive">
-                    {{employee.isActive ? 'Active' : 'Inactive'}}
-                  </span>
-                </td>
               </ng-container>
 
               <ng-container matColumnDef="actions">
@@ -191,7 +173,7 @@ import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.compone
 })
 export class EmployeeListComponent implements OnInit {
   employees: Employee[] = [];
-  displayedColumns: string[] = ['name', 'email', 'department', 'position', 'salary', 'status', 'actions'];
+  displayedColumns: string[] = ['firstName', 'lastName', 'email', 'position', 'actions'];
   currentUser = this.authService.getCurrentUser();
 
   constructor(

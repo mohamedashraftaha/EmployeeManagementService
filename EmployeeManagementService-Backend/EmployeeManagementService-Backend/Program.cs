@@ -11,7 +11,7 @@ using EmployeeManagementService_Backend.Infrastructure.UsersRepository;
 var builder = WebApplication.CreateBuilder(args);
 
 
-builder.Services.AddDbContext<EmployeeDbContext>(options => options.UseInMemoryDatabase("EmployeeDB"));
+builder.Services.AddDbContext<EmployeeDbContext>(options => options.UseSqlite("Data Source=employeeManagementSystem.db"));
 builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
 builder.Services.AddScoped<IUsersRepository, UsersRepository>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();

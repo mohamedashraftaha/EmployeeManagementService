@@ -3,12 +3,13 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Employee, CreateEmployeeRequest, UpdateEmployeeRequest } from '../models/employee.model';
 import { AuthService } from './auth.service';
+import { map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
 })
 export class EmployeeService {
-  private readonly API_URL = 'https://localhost:7000/api/employees'; // Update with your backend URL
+  private readonly API_URL = 'https://localhost:7241/employee'; // Update with your backend URL
 
   constructor(
     private http: HttpClient,
@@ -16,9 +17,11 @@ export class EmployeeService {
   ) {}
 
   getAllEmployees(): Observable<Employee[]> {
-    return this.http.get<Employee[]>(this.API_URL, {
+    return this.http.get<{ data: Employee[] }>(this.API_URL, {
       headers: this.getAuthHeaders()
-    });
+    }).pipe(
+      map(response => response.data)
+    );
   }
 
   getEmployeeById(id: number): Observable<Employee> {

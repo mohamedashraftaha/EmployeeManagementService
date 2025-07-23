@@ -15,7 +15,8 @@ public class EmployeeDbContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
 
-        modelBuilder.Entity<User>().HasKey(e => e.Username);
+        modelBuilder.Entity<User>()
+            .HasKey(e => e.Username);
         modelBuilder.Entity<Employee>()
             .HasKey(e => e.Id);
 
