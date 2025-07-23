@@ -8,6 +8,9 @@ import { MatCardModule } from '@angular/material/card';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { FormsModule } from '@angular/forms';
 import { Employee } from '../../models/employee.model';
 import { EmployeeService } from '../../services/employee.service';
 import { AuthService } from '../../services/auth.service';
@@ -24,7 +27,10 @@ import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.compone
     MatCardModule,
     MatToolbarModule,
     MatSnackBarModule,
-    MatDialogModule
+    MatDialogModule,
+    MatFormFieldModule,
+    MatInputModule,
+    FormsModule
   ],
   template: `
     <mat-toolbar color="primary">
@@ -48,8 +54,17 @@ import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.compone
         </mat-card-header>
 
         <mat-card-content>
+          <div style="margin-bottom: 16px;">
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Search employees</mat-label>
+              <input matInput [(ngModel)]="searchTerm" placeholder="Type to search by name, email, or position">
+              <button *ngIf="searchTerm" matSuffix mat-icon-button aria-label="Clear" (click)="searchTerm = ''">
+                <mat-icon>close</mat-icon>
+              </button>
+            </mat-form-field>
+          </div>
           <div class="table-container">
-            <table mat-table [dataSource]="employees" class="employee-table">
+            <table mat-table [dataSource]="filteredEmployees" class="employee-table">
               <ng-container matColumnDef="firstName">
                 <th mat-header-cell *matHeaderCellDef>First Name</th>
                 <td mat-cell *matCellDef="let employee">{{employee.firstName}}</td>
@@ -174,6 +189,7 @@ import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.compone
 export class EmployeeListComponent implements OnInit {
   employees: Employee[] = [];
   displayedColumns: string[] = ['firstName', 'lastName', 'email', 'position', 'actions'];
+  searchTerm: string = '';
   currentUser = this.authService.getCurrentUser();
 
   constructor(
@@ -236,5 +252,16 @@ export class EmployeeListComponent implements OnInit {
   logout(): void {
     this.authService.logout();
     this.router.navigate(['/login']);
+  }
+
+  get filteredEmployees(): Employee[] {
+    if (!this.searchTerm) return this.employees;
+    const term = this.searchTerm.toLowerCase();
+    return this.employees.filter(emp =>
+      emp.firstName.toLowerCase().includes(term) ||
+      emp.lastName.toLowerCase().includes(term) ||
+      emp.email.toLowerCase().includes(term) ||
+      emp.position.toLowerCase().includes(term)
+    );
   }
 }
