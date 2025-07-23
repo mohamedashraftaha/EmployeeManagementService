@@ -1,4 +1,6 @@
 using EmployeeManagementService_Backend.Domain.Models;
+using EmployeeManagementService_Backend.Infrastructure.UnitOfWork;
+using EmployeeManagementService_Backend.Utils;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -18,8 +20,8 @@ namespace EmployeeManagementService_Backend.Service
 
         private static readonly List<User> Users = new()
         {
-            new User { Username = "admin", Password = "password" },
-            new User { Username = "user", Password = "password" }
+            new User { Username = "admin", PasswordHash = "password" },
+            new User { Username = "user", PasswordHash = "password" }
         };
 
         public async Task<User?> ValidateUser(string username, string password)
@@ -27,8 +29,8 @@ namespace EmployeeManagementService_Backend.Service
             var user = await _unitOfWork.usersRepository.GetByUsernameAsync(username);
             if (user == null)
                 return null;
-            var encryptedPassword = EncryptionHelper.Encrypt(password);
-            if (user.PasswordHash == encryptedPassword)
+            var hashedPassword = PasswordHelper.HashPassword(password);
+            if (user.PasswordHash == hashedPassword)
                 return user;
             return null;
         }
@@ -38,11 +40,11 @@ namespace EmployeeManagementService_Backend.Service
             var existingUser = await _unitOfWork.usersRepository.GetByUsernameAsync(username);
             if (existingUser != null)
                 return false;
-            var encryptedPassword = EncryptionHelper.Encrypt(password);
+            var hashedPassword = PasswordHelper.HashPassword(password);
             var newUser = new User
             {
                 Username = username,
-                PasswordHash = encryptedPassword,
+                PasswordHash = hashedPassword,
                 Role = string.IsNullOrWhiteSpace(role) ? "User" : role
             };
             await _unitOfWork.BeginTransactionAsync();

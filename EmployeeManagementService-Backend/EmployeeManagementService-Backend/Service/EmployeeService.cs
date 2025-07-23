@@ -24,7 +24,8 @@ public class EmployeeService : IEmployeeService
     {
         try
         {
-            var query = _unitOfWork.employeeRepository.GetAllAsync().Result.AsQueryable();
+            var query = await _unitOfWork.employeeRepository.GetAllAsync();
+            query = query.AsQueryable();
             if (!string.IsNullOrWhiteSpace(searchTerm))
             {
                 query = query.Where(e =>

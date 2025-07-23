@@ -1,4 +1,5 @@
 using EmployeeManagementService_Backend.Domain.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace EmployeeManagementService_Backend.Infrastructure.UsersRepository;
 

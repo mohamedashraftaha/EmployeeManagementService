@@ -6,20 +6,30 @@ using System.Text;
 using EmployeeManagementService_Backend.Infrastructure.EmployeesRepository;
 using EmployeeManagementService_Backend.Infrastructure.UnitOfWork;
 using EmployeeManagementService_Backend.Service;
-using EmployeeManagementService_Backend.Service.JwtService;
-using EmployeeManagementService_Backend.Service.AuthenticationService;
+using EmployeeManagementService_Backend.Infrastructure.UsersRepository;
 
 var builder = WebApplication.CreateBuilder(args);
 
 
 builder.Services.AddDbContext<EmployeeDbContext>(options => options.UseInMemoryDatabase("EmployeeDB"));
 builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
+builder.Services.AddScoped<IUsersRepository, UsersRepository>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IEmployeeService, EmployeeService>();
 builder.Services.AddScoped<IJwtService, JwtService>();
 builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
 builder.Services.AddControllers().AddNewtonsoftJson();
 builder.Services.AddOpenApi();
+
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowLocalhost4200",
+        policy => policy.WithOrigins("http://localhost:4200")
+                        .AllowAnyHeader()
+                        .AllowAnyMethod());
+});
+
 
 var jwtSettings = builder.Configuration.GetSection("Jwt");
 
@@ -51,6 +61,9 @@ if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
 }
+
+
+app.UseCors("AllowLocalhost4200");
 
 app.UseHttpsRedirection();
 

@@ -1,4 +1,5 @@
 ﻿using EmployeeManagementService_Backend.Infrastructure.EmployeesRepository;
+using EmployeeManagementService_Backend.Infrastructure.UsersRepository;
 
 namespace EmployeeManagementService_Backend.Infrastructure.UnitOfWork;
 

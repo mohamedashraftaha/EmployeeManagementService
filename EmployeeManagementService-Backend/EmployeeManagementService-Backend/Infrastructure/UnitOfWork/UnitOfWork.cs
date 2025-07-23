@@ -1,4 +1,5 @@
 ﻿using EmployeeManagementService_Backend.Infrastructure.EmployeesRepository;
+using EmployeeManagementService_Backend.Infrastructure.UsersRepository;
 using Microsoft.EntityFrameworkCore.Storage;
 
 namespace EmployeeManagementService_Backend.Infrastructure.UnitOfWork
@@ -14,7 +15,7 @@ namespace EmployeeManagementService_Backend.Infrastructure.UnitOfWork
         }
 
         public IEmployeeRepository employeeRepository => new EmployeeRepository(_employeeDbContext);
-        public IUsersRepository usersRepository => new UsersRepository(_employeeDbContext);
+        public IUsersRepository usersRepository => new UsersRepository.UsersRepository(_employeeDbContext);
 
         public async Task BeginTransactionAsync()
         {
@@ -62,9 +63,5 @@ namespace EmployeeManagementService_Backend.Infrastructure.UnitOfWork
         {
             _transaction?.Dispose();
         }
-
-
-
-
     }
 }
