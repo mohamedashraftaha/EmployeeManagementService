@@ -10,7 +10,7 @@ A fullstack employee management system with a .NET (C#) backend and Angular fron
   - [Architecture & Features](#architecture--features)
   - [Authentication & Security](#authentication--security)
   - [Employee Management](#employee-management)
-  - [In-Memory Database & Seeding](#in-memory-database--seeding)
+  - [Sqllite Database & Seeding](#sqllite-database--seeding)
   - [How to Run the Backend](#how-to-run-the-backend)
 - [Frontend (Angular)](#frontend-angular)
   - [Architecture & Features](#architecture--features-1)
@@ -45,7 +45,7 @@ This system allows users to register, log in, and view a list of employees. Auth
 - **CRUD operations** for employees (the demo UI focuses on listing employees).
 - **Seeded Data**: The in-memory database is seeded with sample employees for immediate testing.
 
-### In-Memory Database & Seeding
+### Sqllite Database & Seeding
 - Uses Entity Framework Core's in-memory provider for easy testing and demo.
 - Employees are seeded in `EmployeeDbContext.OnModelCreating`.
 
@@ -113,5 +113,3 @@ This system allows users to register, log in, and view a list of employees. Auth
 - **Extensibility**: The architecture supports easy extension for more features (CRUD for employees, user roles, etc.).
 
 ---
-
-**For any questions or improvements, please refer to the code comments or contact the author.**
